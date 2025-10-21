@@ -13,11 +13,15 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "cypress:open": "cypress open",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint": "eslint \"src//*.{js,jsx}\"",
+    "lint:fix": "eslint \"src//*.{js,jsx}\" --fix",
+    "prettier": "prettier --write ."
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -44,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^14.5.4",
     "prettier": "^3.6.2"
   }
 }
