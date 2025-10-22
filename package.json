@@ -1,27 +1,30 @@
 {
   "name": "my-project",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
+  "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "cypress run",
     "cypress:open": "cypress open",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
     "prepare": "husky",
-    "lint": "eslint \"src//*.{js,jsx}\"",
-    "lint:fix": "eslint \"src//*.{js,jsx}\" --fix",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "lint:fix": "eslint \"src/**/*.{js,jsx}\" --fix",
     "prettier": "prettier --write ."
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.28.4",
+    "@babel/preset-react": "^7.27.1",
+    "@eslint/js": "^9.38.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "cypress": "^14.5.4",
+    "eslint": "^9.38.0",
+    "eslint-plugin-cypress": "^5.2.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "vite": "^7.1.11"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -46,9 +49,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "cypress": "^14.5.4",
-    "prettier": "^3.6.2"
   }
 }
