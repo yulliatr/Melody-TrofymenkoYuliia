@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // ➤ додаємо це
 import './HomePage.css';
 
 const HomePage = () => {
+  const navigate = useNavigate(); // ➤ додаємо це після імпорту
+
   return (
     <div className="home-page">
       <div className="ellipse ellipse1"></div>
@@ -19,10 +22,23 @@ const HomePage = () => {
           </p>
         </div>
       </div>
+
       <div className="button-section">
-        <button className="main-button button1">Find a Song by Mood</button>
-        <button className="main-button button2">Guess the Melody</button>
+        <button
+          className="main-button button1"
+          onClick={() => navigate('/mood')}
+        >
+          Find a Song by Mood
+        </button>
+
+        <button
+          className="main-button button2"
+          onClick={() => navigate('/guess')}
+        >
+          Guess the Melody
+        </button>
       </div>
+
       <div className="auth-text">
         <span>
           <a href="/signin" className="auth-link">

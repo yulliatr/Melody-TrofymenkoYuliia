@@ -5,6 +5,7 @@ import MoodPage from '../pages/MoodPage';
 import GuessPage from '../pages/GuessPage';
 import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
+import ProfilePage from '../pages/ProfilePage';
 
 const AppRouter = () => (
   <Router>
@@ -14,6 +15,7 @@ const AppRouter = () => (
       <Route path="/guess" element={<GuessPage />} />
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
     </Routes>
   </Router>
 );
