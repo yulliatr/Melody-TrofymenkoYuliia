@@ -1,0 +1,204 @@
+.guess-page {
+  position: relative;
+  width: 100%;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #130a26;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.ellipse {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 1;
+}
+
+.ellipse1 {
+  width: 400px;
+  height: 400px;
+  background-color: rgba(2, 148, 176, 0.8);
+  left: 1350px;
+  top: 700px;
+}
+
+.ellipse2 {
+  width: 400px;
+  height: 400px;
+  background-color: rgba(2, 148, 176, 0.8);
+  left: 43px;
+  top: -384px;
+}
+
+.ellipse3 {
+  width: 400px;
+  height: 400px;
+  background-color: #4a1071;
+  left: 0px;
+  top: 900px;
+}
+
+.header {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 56px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.header-icon {
+  width: 77px;
+  height: 77px;
+  opacity: 0.8;
+  object-fit: contain;
+}
+
+.left-icon {
+  position: absolute;
+  left: 56px;
+  top: 26px;
+}
+
+.right-icon {
+  position: absolute;
+  right: 52px;
+  top: 26px;
+}
+
+.instructions-text {
+  position: absolute;
+  top: 103px;
+  left: 189px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 23px;
+  letter-spacing: 0.15em;
+  color: #0294b0;
+  line-height: 1.4;
+}
+
+.instructions-text .highlight {
+  font-weight: 900;
+}
+
+.audio-container {
+  position: absolute;
+  top: 309px;
+  left: 457px;
+  width: 525px;
+  height: 88px;
+  border-radius: 46px;
+  background-color: white;
+}
+
+.play-button {
+  position: absolute;
+  top: 17px;
+  left: 36px;
+  width: 54px;
+  height: 54px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+}
+
+.play-button:active {
+  transform: scale(0.95);
+}
+
+.wave-icon {
+  position: absolute;
+  top: 12px;
+  width: 64px;
+  height: 64px;
+}
+
+.option-button {
+  position: absolute;
+  width: 525px;
+  height: 122px;
+  border-radius: 27px;
+  background-color: #4a1071;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.1s,
+    background-color 0.2s;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 23px;
+  color: white;
+  font-weight: 400;
+}
+
+.option-button:hover {
+  background-color: #5a1b82;
+}
+
+.option-button:active {
+  transform: scale(0.97);
+  background-color: #3e0e5d;
+}
+
+.option-button span {
+  position: absolute;
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-size: 23px;
+  letter-spacing: 0.15em;
+  line-height: 1.2;
+  width: 100%;
+  left: 0;
+  text-align: center;
+}
+
+.option-button .title-text {
+  top: 35px;
+  font-weight: 700;
+}
+
+.option-button .artist-text {
+  top: 65px;
+  font-weight: 200;
+}
+.option-button.wrong-selected {
+  background-color: #810a0a;
+}
+
+.option-button.correct-answer {
+  background-color: #01856b;
+}
+
+.result-message {
+  position: absolute;
+
+  font-family: 'Outfit', sans-serif;
+  font-size: 23px;
+  line-height: 1.2;
+  z-index: 20;
+  text-align: center;
+}
+.result-message.centered-feedback {
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
