@@ -7,8 +7,12 @@ import SignInPage from '../pages/SignInPage';
 import SignUpPage from '../pages/SignUpPage';
 import ProfilePage from '../pages/ProfilePage';
 
+import ScrollToTop from '../components/ScrollToTop';
+
 const AppRouter = () => (
   <Router>
+    <ScrollToTop />
+
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/mood" element={<MoodPage />} />
