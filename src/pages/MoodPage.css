@@ -1,0 +1,190 @@
+.mood-page {
+  position: relative;
+  width: 100%;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #130a26;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.ellipse {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 1;
+}
+
+.ellipse1 {
+  width: 400px;
+  height: 400px;
+  background-color: rgba(2, 148, 176, 0.8);
+  left: 1350px;
+  top: 700px;
+}
+
+.ellipse2 {
+  width: 400px;
+  height: 400px;
+  background-color: rgba(2, 148, 176, 0.8);
+  left: 43px;
+  top: -384px;
+}
+
+.ellipse3 {
+  width: 400px;
+  height: 400px;
+  background-color: #4a1071;
+  left: 0px;
+  top: 900px;
+}
+
+.header {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 56px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.header-icon {
+  width: 77px;
+  height: 77px;
+  opacity: 0.8;
+  object-fit: contain;
+}
+
+.left-icon {
+  position: absolute;
+  left: 56px;
+  top: 26px;
+}
+
+.right-icon {
+  position: absolute;
+  right: 52px;
+  top: 26px;
+}
+
+.mood-text {
+  position: absolute;
+  top: 134px;
+  left: 188px;
+  width: 1065px;
+  height: 105px;
+
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  color: #0294b0;
+  line-height: 1.4;
+}
+.emotion-button {
+  position: absolute;
+  width: 255px;
+  height: 115px;
+  border-radius: 42px;
+  background-color: rgba(217, 217, 217, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 0.15em;
+  border: 3px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition:
+    border 0.2s,
+    transform 0.1s;
+}
+
+.emotion-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.emotion-button.selected {
+  border-color: #0294b0;
+}
+.generate-button {
+  position: absolute;
+  top: 660px;
+  left: 548px;
+  width: 345px;
+  height: 91px;
+  border-radius: 58px;
+  background-color: #4a1071;
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 0.15em;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition:
+    transform 0.1s ease,
+    background-color 0.2s ease;
+}
+
+.generate-button:hover {
+  background-color: #5b1a8a;
+}
+
+.generate-button:active {
+  background-color: #3d0d5c;
+}
+
+.song-for-you-text {
+  position: absolute;
+  top: 796px;
+  left: 601px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 0.15em;
+  color: #0294b0;
+}
+
+.generated-track-text {
+  position: absolute;
+  top: 856px;
+  left: 278px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 0.15em;
+  color: white;
+}
+
+.heart-icon {
+  position: absolute;
+  top: 885px;
+  left: 1173px;
+  width: 39px;
+  height: 39px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.heart-icon:hover {
+  transform: scale(1.05);
+}
