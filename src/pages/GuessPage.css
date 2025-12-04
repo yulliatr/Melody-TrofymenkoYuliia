@@ -26,14 +26,14 @@
   width: 400px;
   height: 400px;
   background-color: rgba(2, 148, 176, 0.8);
-  left: 1350px;
-  top: 700px;
+  left: 1500px !important;
+  top: 600px !important;
 }
 
 .ellipse2 {
   width: 400px;
   height: 400px;
-  background-color: rgba(2, 148, 176, 0.8);
+  background-color: #4a1071 !important;
   left: 43px;
   top: -384px;
 }
@@ -41,7 +41,7 @@
 .ellipse3 {
   width: 400px;
   height: 400px;
-  background-color: #4a1071;
+  background-color: rgba(2, 148, 176, 0.8);
   left: 0px;
   top: 900px;
 }

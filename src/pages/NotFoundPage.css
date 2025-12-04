@@ -24,9 +24,27 @@
   z-index: 1;
 }
 
-.ellipse1 { width: 400px; height: 400px; background-color: rgba(2, 148, 176, 0.8); left: 80%; top: 70%; }
-.ellipse2 { width: 400px; height: 400px; background-color: rgba(2, 148, 176, 0.8); left: 5%; top: -20%; }
-.ellipse3 { width: 400px; height: 400px; background-color: #4a1071; left: 10%; top: 90%; }
+.ellipse1 {
+  width: 400px;
+  height: 400px;
+  background-color: rgba(2, 148, 176, 0.8);
+  left: 80%;
+  top: 70%;
+}
+.ellipse2 {
+  width: 400px;
+  height: 400px;
+  background-color: rgba(2, 148, 176, 0.8);
+  left: 5%;
+  top: -20%;
+}
+.ellipse3 {
+  width: 400px;
+  height: 400px;
+  background-color: #4a1071;
+  left: 10%;
+  top: 90%;
+}
 
 .not-found-container {
   position: relative;
@@ -44,7 +62,7 @@
 .not-found-subtitle {
   font-size: 24px;
   font-weight: 500;
-  color: #0294B0;
+  color: #0294b0;
   margin-bottom: 40px;
 }
 

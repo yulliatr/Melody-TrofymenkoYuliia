@@ -1,0 +1,69 @@
+[
+  {
+    "id": 1764790791345,
+    "email": "one@gmail.com",
+    "username": "Yul",
+    "password": "123123",
+    "joined": "03/12/2025",
+    "stats": {
+      "gamesPlayed": 100,
+      "correctAnswers": 61,
+      "longestStrike": 16,
+      "currentStrike": 0
+    },
+    "avatarUrl": "/src/assets/images/avatar.png"
+  },
+  {
+    "id": 1764880541536,
+    "email": "rr@gmail.com",
+    "username": "rr",
+    "password": "123123",
+    "joined": "04/12/2025",
+    "stats": {
+      "gamesPlayed": 5,
+      "correctAnswers": 4,
+      "longestStrike": 3,
+      "currentStrike": 0
+    }
+  },
+  {
+    "id": 1764880618357,
+    "email": "e@gmail.com",
+    "username": "e",
+    "password": "123123",
+    "joined": "04/12/2025",
+    "stats": {
+      "gamesPlayed": 3,
+      "correctAnswers": 1,
+      "longestStrike": 1,
+      "currentStrike": 0
+    }
+  },
+  {
+    "id": 1764880993181,
+    "email": "t@gmail.com",
+    "username": "test",
+    "password": "123123",
+    "joined": "04/12/2025",
+    "stats": {
+      "gamesPlayed": 2,
+      "correctAnswers": 2,
+      "longestStrike": 2,
+      "currentStrike": 2
+    },
+    "avatarUrl": "/src/assets/images/avatar5.png"
+  },
+  {
+    "id": 1764881061149,
+    "email": "u@gmail.com",
+    "username": "u",
+    "password": "123123",
+    "joined": "04/12/2025",
+    "stats": {
+      "gamesPlayed": 3,
+      "correctAnswers": 2,
+      "longestStrike": 2,
+      "currentStrike": 2
+    }
+  }
+]

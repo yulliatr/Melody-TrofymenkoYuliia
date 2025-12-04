@@ -1,9 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // ➤ додаємо це
+import { useNavigate, Link } from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage = () => {
-  const navigate = useNavigate(); // ➤ додаємо це після імпорту
+  const navigate = useNavigate();
 
   return (
     <div className="home-page">
@@ -41,14 +41,14 @@ const HomePage = () => {
 
       <div className="auth-text">
         <span>
-          <a href="/signin" className="auth-link">
+          <Link to="/signin" className="auth-link">
             Log in
-          </a>{' '}
+          </Link>{' '}
           or
-          <a href="/signup" className="auth-link">
+          <Link to="/signup" className="auth-link">
             {' '}
             sign up{' '}
-          </a>
+          </Link>
           to save your favorite songs and track your game results
         </span>
       </div>

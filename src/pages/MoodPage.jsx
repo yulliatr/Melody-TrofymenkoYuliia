@@ -1,28 +1,93 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './MoodPage.css';
 import image1 from '../assets/images/image1.png';
 import image2 from '../assets/images/image2.png';
 import heart1 from '../assets/images/heart1.png';
 import heart2 from '../assets/images/heart2.png';
+import useFetchData from '../hooks/useFetchData';
+import { useAuth } from '../hooks/useAuth';
+import useMutation from '../hooks/useMutation';
+
+const moodsConfig = [
+  { text: 'Happy', top: 385, left: 187 },
+  { text: 'Motivated', top: 291, left: 457 },
+  { text: 'Relaxed', top: 291, left: 727 },
+  { text: 'Sad', top: 485, left: 457 },
+  { text: 'Romantic', top: 485, left: 727 },
+  { text: 'Christmas', top: 385, left: 997 },
+];
 
 const MoodPage = () => {
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [selectedMood, setSelectedMood] = useState(null);
-  const [generated, setGenerated] = useState(false);
+  const [generatedTrack, setGeneratedTrack] = useState(null);
   const [heartActive, setHeartActive] = useState(false);
 
-  const moods = [
-    { id: 1, text: 'Happy', top: 385, left: 187 },
-    { id: 2, text: 'Motivated', top: 291, left: 457 },
-    { id: 3, text: 'Relaxed', top: 291, left: 727 },
-    { id: 4, text: 'Sad', top: 485, left: 457 },
-    { id: 5, text: 'Romantic', top: 485, left: 727 },
-    { id: 6, text: 'Angry', top: 385, left: 997 },
-  ];
+  const {
+    data: songsPool,
+    isLoading: isLoadingSongs,
+    isError: isSongsPoolError,
+  } = useFetchData('songs/pool', []);
+
+  const { mutate: saveSongMutation, isLoading: isSaving } =
+    useMutation('saved_songs');
+
+  const handleMoodSelect = (mood) => {
+    setSelectedMood(mood);
+    setGeneratedTrack(null);
+    setHeartActive(false);
+  };
 
   const handleGenerate = () => {
-    if (selectedMood) {
-      setGenerated(true);
+    if (!selectedMood || isLoadingSongs) return;
+
+    setGeneratedTrack(null);
+    setHeartActive(false);
+
+    const filteredSongs = songsPool.filter(
+      (song) => song.mood.toLowerCase() === selectedMood.toLowerCase()
+    );
+
+    if (filteredSongs.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filteredSongs.length);
+      const generatedSong = filteredSongs[randomIndex];
+
+      setGeneratedTrack(generatedSong);
+    } else {
+      setGeneratedTrack({
+        title: 'No songs found',
+        artist: 'Try another mood',
+        id: 0,
+      });
+    }
+  };
+
+  const handleSaveSong = async () => {
+    if (!generatedTrack || generatedTrack.id === 0) {
+      alert('Please generate a valid song first.');
+      return;
+    }
+    if (!isAuthenticated) {
+      navigate('/signin');
+      return;
+    }
+
+    const songToSave = {
+      userId: user.id,
+      songId: generatedTrack.id,
+    };
+
+    const result = await saveSongMutation('POST', songToSave);
+
+    if (result) {
+      setHeartActive(true);
+      //alert(`'${generatedTrack.title}' saved successfully!`);
+    } else if (isSaving) {
+      //alert('Saving in progress...');
+    } else {
+      //alert('Failed to save song. Check server connection.');
     }
   };
 
@@ -53,12 +118,12 @@ const MoodPage = () => {
         Choose how you feel today — and we’ll suggest something that resonates.
       </p>
 
-      {moods.map((mood) => (
+      {moodsConfig.map((mood) => (
         <button
-          key={mood.id}
-          className={`emotion-button ${selectedMood === mood.id ? 'selected' : ''}`}
+          key={mood.text}
+          className={`emotion-button ${selectedMood === mood.text ? 'selected' : ''}`}
           style={{ top: mood.top, left: mood.left }}
-          onClick={() => setSelectedMood(mood.id)}
+          onClick={() => handleMoodSelect(mood.text)}
         >
           {mood.text}
         </button>
@@ -68,24 +133,37 @@ const MoodPage = () => {
         className="generate-button"
         style={{ top: 660, left: 548 }}
         onClick={handleGenerate}
+        disabled={!selectedMood || isLoadingSongs || isSaving}
       >
-        GENERATE
+        {isLoadingSongs ? 'Loading...' : 'GENERATE'}
       </button>
+
+      {isSongsPoolError && (
+        <p className="error-message-center">
+          Error connecting to music server.
+        </p>
+      )}
 
       <p className="song-for-you-text">Song For You:</p>
 
-      {generated && (
-        <>
+      {generatedTrack && generatedTrack.title !== 'No songs found' && (
+        <div className="result-wrapper">
           <p className="generated-track-text">
-            Chemtrails Over The Country Club - Lana Del Ray
+            {generatedTrack.title} - {generatedTrack.artist}
           </p>
           <img
             src={heartActive ? heart2 : heart1}
             alt="Heart"
             className="heart-icon"
-            onClick={() => setHeartActive(!heartActive)}
+            onClick={handleSaveSong}
+            style={{ opacity: isSaving ? 0.5 : 1 }}
           />
-        </>
+        </div>
+      )}
+      {generatedTrack && generatedTrack.title === 'No songs found' && (
+        <p className="generated-track-text">
+          {generatedTrack.title} - {generatedTrack.artist}
+        </p>
       )}
     </div>
   );

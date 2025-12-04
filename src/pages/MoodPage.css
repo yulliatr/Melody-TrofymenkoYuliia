@@ -167,7 +167,7 @@
 .generated-track-text {
   position: absolute;
   top: 856px;
-  left: 278px;
+  left: 400px;
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
   font-size: 30px;
@@ -178,7 +178,7 @@
 .heart-icon {
   position: absolute;
   top: 885px;
-  left: 1173px;
+  left: 1100px;
   width: 39px;
   height: 39px;
   cursor: pointer;
