@@ -1,57 +1,63 @@
-const path = require('path');
-const fs = require('fs');
-const { readFile, writeFile } = require('../utils/file');
-const jwt = require('jsonwebtoken');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
-const USERS_PATH = path.join(__dirname, '..', 'db', 'users.json');
 const SECRET = 'supersecret';
 
-const generateUsername = (email) => {
-  if (!email) return 'Guest';
-  return email.split('@')[0];
-};
+const generateUsername = (email) => (email ? email.split('@')[0] : 'Guest');
 
-module.exports = {
+export default {
   async register(email, password) {
-    const users = await readFile(USERS_PATH);
+    const exists = await User.findOne({ email });
+    if (exists) throw new Error('Email already registered');
 
-    if (users.find((u) => u.email === email)) {
-      throw new Error('Email already registered');
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const username = generateUsername(email);
-
-    const newUser = {
-      id: Date.now(),
+    const user = await User.create({
       email,
-      username,
-      password,
-      joined: new Date().toLocaleDateString('en-GB'),
+      username: generateUsername(email),
+      password: hashedPassword,
+      joined: new Date(),
+      avatarUrl: null,
       stats: {
         gamesPlayed: 0,
         correctAnswers: 0,
         longestStrike: 0,
         currentStrike: 0,
       },
-    };
+    });
 
-    users.push(newUser);
-    await writeFile(USERS_PATH, users);
-    return newUser;
+    return {
+      id: user._id.toString(),
+      _id: user._id.toString(),
+      email: user.email,
+      username: user.username,
+      joined: user.joined,
+      avatarUrl: user.avatarUrl,
+      stats: user.stats,
+    };
   },
 
   async login(email, password) {
-    const users = await readFile(USERS_PATH);
-
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
-
+    const user = await User.findOne({ email });
     if (!user) throw new Error('Invalid email or password');
 
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error('Invalid email or password');
+
+    const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: '1d' });
+
     return {
-      accessToken: jwt.sign({ id: user.id }, SECRET, { expiresIn: '1d' }),
-      user,
+      accessToken: token,
+      user: {
+        id: user._id.toString(),
+        _id: user._id.toString(),
+        email: user.email,
+        username: user.username,
+        joined: user.joined,
+        avatarUrl: user.avatarUrl,
+        stats: user.stats,
+      },
     };
   },
 };

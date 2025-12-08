@@ -1,7 +1,8 @@
-const { Router } = require('express');
+import { Router } from 'express';
+import songsController from '../controllers/songs.controller.js';
+
 const router = Router();
-const songsController = require('../controllers/songs.controller');
 
 router.get('/pool', songsController.getSongsPool);
 
-module.exports = router;
+export default router;

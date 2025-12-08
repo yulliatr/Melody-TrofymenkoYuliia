@@ -1,12 +1,14 @@
-const songsService = require('../services/songs.service');
+import songsService from '../services/songs.service.js';
 
-module.exports = {
+const songsController = {
   async getSongsPool(req, res) {
     try {
       const songs = await songsService.getSongs();
-      res.status(200).json(songs);
+      res.json(songs);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   },
 };
+
+export default songsController;

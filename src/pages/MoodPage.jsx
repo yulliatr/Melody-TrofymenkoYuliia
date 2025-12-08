@@ -75,8 +75,8 @@ const MoodPage = () => {
     }
 
     const songToSave = {
-      userId: user.id,
-      songId: generatedTrack.id,
+      userId: user._id,
+      songId: generatedTrack._id || generatedTrack.id,
     };
 
     const result = await saveSongMutation('POST', songToSave);

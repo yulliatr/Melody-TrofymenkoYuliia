@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 import image1 from '../assets/images/image1.png';
 import avatar from '../assets/images/avatar.png';
 import pencil from '../assets/images/pencil.png';
 import playIcon from '../assets/images/play-icon.png';
-import pauseIcon from '../assets/images/pause-icon.png';
 import removeIcon from '../assets/images/remove-icon.png';
+import pauseIcon from '../assets/images/pause-icon.png';
 import { useAuth } from '../hooks/useAuth';
 import useFetchData from '../hooks/useFetchData';
 import useMutation from '../hooks/useMutation';
@@ -16,8 +16,11 @@ import avatar2 from '../assets/images/avatar2.png';
 import avatar3 from '../assets/images/avatar3.png';
 import avatar4 from '../assets/images/avatar4.png';
 import avatar5 from '../assets/images/avatar5.png';
+import axios from 'axios';
 
 const AVATAR_OPTIONS = [avatar, avatar1, avatar2, avatar3, avatar4, avatar5];
+
+const BASE_URL = 'http://localhost:3000';
 
 const SavedSong = ({ song, onPlay, onRemove, isPlaying }) => (
   <div className="saved-song-item">
@@ -27,8 +30,10 @@ const SavedSong = ({ song, onPlay, onRemove, isPlaying }) => (
       className="song-action-icon play-icon"
       onClick={() => onPlay(song.id, song.audioSrc)}
     />
+
     <span className="song-title">{song.title}</span>
     <span className="song-artist">{song.artist}</span>
+
     <img
       src={removeIcon}
       alt="Remove Song"
@@ -39,13 +44,33 @@ const SavedSong = ({ song, onPlay, onRemove, isPlaying }) => (
 );
 
 const ProfilePage = () => {
-  const { user, logout, updateUserContext } = useAuth();
+  const { user, logout, updateUserContext, refreshUser } = useAuth();
+  useEffect(() => {
+    if (user?._id) {
+      refreshUser();
+    }
+  }, [user?._id]);
   const navigate = useNavigate();
+  const audioRef = useRef(null);
 
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState(null);
   const [currentAudioUrl, setCurrentAudioUrl] = useState(null);
+
+  const {
+    data: savedSongs,
+    isLoading: isLoadingSongs,
+    setData: setSavedSongs,
+    isError: isSongsError,
+  } = useFetchData(`saved_songs?userId=${user?._id}`, []);
+
   const [username, setUsername] = useState(user?.username || 'Guest');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl || avatar);
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username || 'Guest');
+      setAvatarUrl(user.avatarUrl || avatar);
+    }
+  }, [user]);
   const [isUsernameEditing, setIsUsernameEditing] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
@@ -58,14 +83,31 @@ const ProfilePage = () => {
     }
   );
 
-  const {
-    data: savedSongs,
-    isLoading: isLoadingSongs,
-    setData: setSavedSongs,
-    isError: isSongsError,
-  } = useFetchData(`saved_songs?userId=${user?.id}`, []);
+  const { mutate: deleteSongMutation } = useMutation(
+    'saved_songs',
+    (method, data, id) => {
+      return axios({
+        url: `/saved_songs/${id}`,
+        method,
+        data,
+      }).then((res) => {
+        setSavedSongs((prev) => prev.filter((song) => song.id !== id));
+        return res.data;
+      });
+    }
+  );
 
-  const { mutate: deleteSongMutation } = useMutation('saved_songs', () => {});
+  useEffect(() => {
+    if (audioRef.current && currentAudioUrl) {
+      audioRef.current.src = currentAudioUrl;
+      audioRef.current
+        .play()
+        .catch((e) => console.error('Autoplay failed:', e));
+    } else if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+    }
+  }, [currentAudioUrl]);
 
   const handleLogout = () => {
     logout();
@@ -78,52 +120,73 @@ const ProfilePage = () => {
       setCurrentAudioUrl(null);
     } else {
       setCurrentlyPlayingId(songId);
-      setCurrentAudioUrl(audioSrc);
+      setCurrentAudioUrl(`${BASE_URL}${audioSrc}`);
     }
   };
 
   const handleRemoveSong = async (songIdToDelete) => {
-    deleteSongMutation('DELETE', null, songIdToDelete);
+    try {
+      await axios.delete(`http://localhost:3000/saved_songs/${songIdToDelete}`);
+      setSavedSongs((prev) =>
+        prev.filter((song) => song.id !== songIdToDelete)
+      );
 
-    setSavedSongs((prev) => prev.filter((song) => song.id !== songIdToDelete));
-
-    if (currentlyPlayingId === songIdToDelete) {
-      setCurrentlyPlayingId(null);
-      setCurrentAudioUrl(null);
+      if (currentlyPlayingId === songIdToDelete) {
+        setCurrentlyPlayingId(null);
+        setCurrentAudioUrl(null);
+      }
+    } catch (err) {
+      console.error('Failed to remove song:', err);
     }
   };
 
-  const handleEditAvatar = () => setIsAvatarModalOpen(true);
+  const handleEditAvatar = () => {
+    setIsAvatarModalOpen(true);
+  };
 
   const handleSelectNewAvatar = async (newUrl) => {
     setIsAvatarModalOpen(false);
     if (!newUrl) return;
-    await updateProfileMutation(
-      'PATCH',
-      { avatarUrl: newUrl, username, email: user.email },
-      user.id
-    );
+
     setAvatarUrl(newUrl);
+
+    try {
+      updateProfileMutation(
+        'PATCH',
+        {
+          username,
+          avatarUrl: newUrl,
+          email: user.email,
+        },
+        user._id
+      );
+    } catch (err) {
+      console.error('Failed to update avatar on server', err);
+    }
   };
 
-  const handleUsernameChange = (event) => setUsername(event.target.value);
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
   const handleUsernameKeyDown = (event) => {
     if (event.key === 'Enter') {
       setIsUsernameEditing(false);
       updateProfileMutation(
         'PATCH',
-        { username, avatarUrl, email: user.email },
-        user.id
+        { username: username, avatarUrl: avatarUrl, email: user.email },
+        user._id
       );
     }
   };
+
   const handleUsernameBlur = () => {
     setIsUsernameEditing(false);
     if (username !== user?.username) {
       updateProfileMutation(
         'PATCH',
-        { username, avatarUrl, email: user.email },
-        user.id
+        { username: username, avatarUrl: avatarUrl, email: user.email },
+        user._id
       );
     }
   };
@@ -141,7 +204,11 @@ const ProfilePage = () => {
           <img src={image1} alt="Home icon" className="header-icon left-icon" />
         </Link>
         <span className="greeting">Hi, {username}!</span>
-        <span onClick={handleLogout} className="logout-link">
+        <span
+          onClick={handleLogout}
+          className="logout-link"
+          style={{ cursor: 'pointer' }}
+        >
           Log Out
         </span>
       </header>
@@ -158,6 +225,7 @@ const ProfilePage = () => {
                 onClick={handleEditAvatar}
               />
             </div>
+
             <div className="user-details">
               <div className="detail-row">
                 <span className="detail-label">Username:</span>
@@ -187,7 +255,11 @@ const ProfilePage = () => {
               </div>
               <div className="detail-row">
                 <span className="detail-label">Joined:</span>
-                <span className="detail-value">{user?.joined || 'N/A'}</span>
+                <span className="detail-value">
+                  {user?.joined
+                    ? new Date(user.joined).toLocaleDateString('en-GB')
+                    : 'N/A'}
+                </span>
               </div>
             </div>
           </div>
@@ -245,18 +317,14 @@ const ProfilePage = () => {
         )}
       </div>
 
-      {currentAudioUrl && (
-        <audio
-          id="global-audio-player"
-          src={currentAudioUrl}
-          autoPlay
-          key={currentAudioUrl}
-          onEnded={() => {
-            setCurrentlyPlayingId(null);
-            setCurrentAudioUrl(null);
-          }}
-        />
-      )}
+      <audio
+        ref={audioRef}
+        id="global-audio-player"
+        onEnded={() => {
+          setCurrentlyPlayingId(null);
+          setCurrentAudioUrl(null);
+        }}
+      />
 
       {isAvatarModalOpen && (
         <AvatarSelector

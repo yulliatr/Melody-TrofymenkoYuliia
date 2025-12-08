@@ -1,11 +1,11 @@
-const path = require('path');
-const { readFile } = require('../utils/file');
+import Song from '../models/Song.js';
 
-const SONGS_PATH = path.join(__dirname, '..', 'db', 'songs.json');
-
-module.exports = {
+export default {
   async getSongs() {
-    const songs = await readFile(SONGS_PATH);
-    return songs;
+    return Song.find();
+  },
+
+  async getSongById(id) {
+    return Song.findById(id);
   },
 };

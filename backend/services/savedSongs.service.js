@@ -1,96 +1,55 @@
-const path = require('path');
-const { readFile, writeFile } = require('../utils/file');
-const { v4: uuidv4 } = require('uuid');
-const songsService = require('./songs.service');
+import SavedSong from '../models/SavedSong.js';
+import Song from '../models/Song.js';
+import mongoose from 'mongoose';
+
 const BASE_URL = 'http://localhost:3000';
 
-const SAVED_SONGS_PATH = path.join(__dirname, '..', 'db', 'savedsongs.json');
-
-module.exports = {
+export default {
   async getSongsByUserId(userId) {
-    const savedRecords = await readFile(SAVED_SONGS_PATH);
+    const userIdObj = new mongoose.Types.ObjectId(userId);
 
-    const allSongsPool = await songsService.getSongs();
-    const songMap = allSongsPool.reduce((acc, song) => {
-      acc[song.id] = song;
-      return acc;
-    }, {});
-
-    const userSavedRecords = savedRecords.filter(
-      (record) => String(record.userId) === String(userId)
+    const savedRecords = await SavedSong.find({ userId: userIdObj }).populate(
+      'songId'
     );
 
-    return userSavedRecords.map((record) => {
-      const fullSongData = songMap[record.songId];
+    return savedRecords.map((record) => ({
+      id: record.id,
+      userId: record.userId,
+      songId: record.songId.id,
+      title: record.songId.title,
+      artist: record.songId.artist,
+      audioSrc: BASE_URL + record.songId.audioSrc,
+    }));
+  },
 
-      if (!fullSongData) {
-        return {
-          ...record,
-          title: record.title + ' (Audio Unavailable)',
-          audioSrc: null,
-        };
-      }
+  async saveSong(userId, songId) {
+    const songIdObj = new mongoose.Types.ObjectId(songId);
+    const userIdObj = new mongoose.Types.ObjectId(userId);
 
-      return {
-        ...fullSongData,
-        audioSrc: BASE_URL + fullSongData.audioSrc,
-        id: record.id,
-        songId: fullSongData.id,
-        userId: record.userId,
-      };
+    const song = await Song.findById(songIdObj);
+    if (!song) throw new Error('Song not found');
+
+    const exists = await SavedSong.findOne({
+      userId: userIdObj,
+      songId: songIdObj,
     });
+    if (exists) throw new Error('Song already saved');
+
+    const saved = await SavedSong.create({
+      userId: userIdObj,
+      songId: songIdObj,
+      title: song.title,
+      artist: song.artist,
+      audioSrc: song.audioSrc,
+    });
+
+    return saved;
   },
 
-  async saveSong(songData) {
-    const songs = await readFile(SAVED_SONGS_PATH);
-    const { userId, songId } = songData;
+  async deleteSong(savedSongId) {
+    const savedSongIdObj = new mongoose.Types.ObjectId(savedSongId);
 
-    const allSongsPool = await songsService.getSongs();
-    const fullSongDetails = allSongsPool.find(
-      (s) => String(s.id) === String(songId)
-    );
-
-    if (!fullSongDetails || !fullSongDetails.audioSrc) {
-      throw new Error('Song data missing or audio source not found.');
-    }
-
-    const isDuplicate = songs.some(
-      (song) =>
-        String(song.userId) === String(userId) &&
-        String(song.songId) === String(songId)
-    );
-
-    if (isDuplicate) {
-      throw new Error('Song already saved by this user.');
-    }
-
-    const newSavedSong = {
-      id: uuidv4(),
-      userId: String(userId),
-      songId: String(songId),
-      title: fullSongDetails.title,
-      artist: fullSongDetails.artist,
-      audioSrc: fullSongDetails.audioSrc,
-    };
-
-    songs.push(newSavedSong);
-
-    await writeFile(SAVED_SONGS_PATH, songs);
-
-    return newSavedSong;
-  },
-
-  async deleteSong(id) {
-    let songs = await readFile(SAVED_SONGS_PATH);
-
-    const initialLength = songs.length;
-
-    songs = songs.filter((song) => song.id !== id);
-
-    if (songs.length === initialLength) {
-      throw new Error('Song not found');
-    }
-
-    await writeFile(SAVED_SONGS_PATH, songs);
+    const deleted = await SavedSong.findByIdAndDelete(savedSongIdObj);
+    if (!deleted) throw new Error('Saved song not found');
   },
 };

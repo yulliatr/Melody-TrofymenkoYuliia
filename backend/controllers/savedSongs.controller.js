@@ -1,38 +1,74 @@
-const savedSongsService = require('../services/savedSongs.service');
+import SavedSong from '../models/SavedSong.js';
+import mongoose from 'mongoose';
 
-module.exports = {
+import Song from '../models/Song.js';
+
+const savedSongsController = {
   async saveSong(req, res) {
-    const songData = req.body;
     try {
-      const newSong = await savedSongsService.saveSong(songData);
-      res.status(201).json(newSong);
+      const { userId, songId } = req.body;
+      if (!userId || !songId)
+        return res.status(400).json({ error: 'Missing userId or songId' });
+
+      const song = await Song.findById(songId);
+      if (!song) return res.status(404).json({ error: 'Song not found' });
+
+      const exists = await SavedSong.findOne({ userId, songId });
+      if (exists) return res.status(400).json({ error: 'Song already saved' });
+
+      const saved = await SavedSong.create({
+        userId,
+        songId,
+        title: song.title,
+        artist: song.artist,
+        audioSrc: song.audioSrc,
+      });
+
+      res.json(saved);
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      console.error(err);
+      res.status(500).json({ error: 'Failed to save song' });
     }
   },
 
   async getSavedSongs(req, res) {
-    const { userId } = req.query;
-
-    if (!userId) {
-      return res.status(400).json({ error: 'Missing userId query parameter.' });
-    }
-
     try {
-      const songs = await savedSongsService.getSongsByUserId(userId);
-      res.status(200).json(songs);
+      const { userId } = req.query;
+
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+      }
+
+      const savedSongs = await SavedSong.find({
+        userId: new mongoose.Types.ObjectId(userId),
+      }).populate('songId');
+
+      res.json(
+        savedSongs.map((s) => ({
+          id: s.id,
+          title: s.songId.title,
+          artist: s.songId.artist,
+          audioSrc: s.songId.audioSrc,
+        }))
+      );
     } catch (err) {
-      res.status(500).json({ error: 'Failed to fetch saved songs.' });
+      console.error(err);
+      res.status(500).json({ error: 'Failed to fetch saved songs' });
     }
   },
 
   async deleteSong(req, res) {
-    const { id } = req.params;
     try {
-      await savedSongsService.deleteSong(id);
-      res.status(204).send();
+      const { id } = req.params;
+      const deleted = await SavedSong.findByIdAndDelete(id);
+      if (!deleted)
+        return res.status(404).json({ error: 'Saved song not found' });
+      res.json({ message: 'Deleted successfully' });
     } catch (err) {
-      res.status(404).json({ error: 'Song record not found' });
+      console.error(err);
+      res.status(500).json({ error: 'Failed to delete saved song' });
     }
   },
 };
+
+export default savedSongsController;

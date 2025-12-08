@@ -1,11 +1,10 @@
-const { Router } = require('express');
-const router = Router();
-const savedSongsController = require('../controllers/savedSongs.controller');
+import { Router } from 'express';
+import savedSongsController from '../controllers/savedSongs.controller.js';
 
-router.post('/', savedSongsController.saveSong);
+const router = Router();
 
 router.get('/', savedSongsController.getSavedSongs);
-
+router.post('/', savedSongsController.saveSong);
 router.delete('/:id', savedSongsController.deleteSong);
 
-module.exports = router;
+export default router;

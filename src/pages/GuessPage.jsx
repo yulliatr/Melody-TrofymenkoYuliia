@@ -118,40 +118,41 @@ const GuessPage = () => {
 
     const isCorrect = currentQuiz.correctAnswerId === selectedOptionId;
 
-    const response = await submitAnswerMutation('POST', {
-      userId: user.id,
+    await submitAnswerMutation('POST', {
+      userId: user._id,
       selectedId: selectedOptionId,
       correctId: currentQuiz.correctAnswerId,
       isCorrect: isCorrect,
     });
 
-    if (response) {
-      const correctOption = currentQuiz.options.find(
-        (opt) => opt.id === currentQuiz.correctAnswerId
-      );
-      if (isCorrect) {
-        setResultMessage({
-          text: `That’s right! You nailed it.<br />Current Streak: ${response.currentStreak}🔥`,
-          style: {
-            top: 826,
-            color: 'white',
-            letterSpacing: '0.15em',
-            fontWeight: 600,
-          },
-          centered: true,
-        });
-      } else {
-        setResultMessage({
-          text: `Oops! The song was ‘${correctOption.title} – ${correctOption.artist}’<br />Current Streak: ${response.currentStreak}🔥`,
-          style: {
-            top: 826,
-            color: 'white',
-            letterSpacing: '0.15em',
-            fontWeight: 600,
-          },
-          centered: true,
-        });
-      }
+    const newStreak = isCorrect ? (user?.stats?.currentStrike ?? 0) + 1 : 0;
+
+    const correctOption = currentQuiz.options.find(
+      (opt) => opt.id === currentQuiz.correctAnswerId
+    );
+
+    if (isCorrect) {
+      setResultMessage({
+        text: `That’s right! You nailed it.<br />Current Streak: ${newStreak}🔥`,
+        style: {
+          top: 826,
+          color: 'white',
+          letterSpacing: '0.15em',
+          fontWeight: 600,
+        },
+        centered: true,
+      });
+    } else {
+      setResultMessage({
+        text: `Oops! The song was ‘${correctOption.title} – ${correctOption.artist}’<br />Current Streak: 0🔥`,
+        style: {
+          top: 826,
+          color: 'white',
+          letterSpacing: '0.15em',
+          fontWeight: 600,
+        },
+        centered: true,
+      });
     }
   };
 
