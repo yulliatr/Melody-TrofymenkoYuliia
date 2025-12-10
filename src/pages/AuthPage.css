@@ -1,12 +1,13 @@
 .auth-page {
   position: relative;
   width: 100%;
-  height: 1080px;
-  min-height: 800px;
+  min-height: 100vh;
+  height: auto;
   overflow: hidden;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .background {
@@ -53,7 +54,7 @@
 .auth-container {
   position: relative;
   width: 420px;
-  margin-top: 50px;
+  margin-top: 0px;
   padding: 20px;
   z-index: 10;
   display: flex;

@@ -12,6 +12,22 @@ export default [
   js.configs.recommended,
 
   {
+    files: ['backend/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
+      'no-unused-vars': ['warn', { varsIgnorePattern: '^React$' }],
+    },
+  },
+
+  {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       parser: babelParser,

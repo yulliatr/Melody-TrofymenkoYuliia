@@ -1,9 +1,51 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './AuthPage.css';
 import image1 from '../assets/images/image1.png';
+import { useAuth } from '../hooks/useAuth';
 
 const SignUpPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const { register, loading, authError } = useAuth();
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!email || !password || !confirmPassword) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+
+    const registrationData = { email, password };
+
+    const success = await register(registrationData);
+
+    if (success) {
+      navigate('/profile');
+    } else {
+      setError(
+        authError ||
+          'Registration failed. Check if the email is already in use.'
+      );
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="background">
@@ -25,23 +67,42 @@ const SignUpPage = () => {
           and track your game results.
         </p>
 
-        <label className="auth-label">Email</label>
-        <input
-          type="email"
-          className="auth-input"
-          placeholder="example@gmail.com"
-        />
+        <form onSubmit={handleSubmit}>
+          <label className="auth-label">Email</label>
+          <input
+            type="email"
+            className="auth-input"
+            placeholder="example@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <label className="auth-label">Username</label>
-        <input type="text" className="auth-input" />
+          <label className="auth-label">Password</label>
+          <input
+            type="password"
+            className="auth-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <label className="auth-label">Password</label>
-        <input type="password" className="auth-input" />
+          <label className="auth-label">Confirm Password</label>
+          <input
+            type="password"
+            className="auth-input"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
 
-        <label className="auth-label">Confirm Password</label>
-        <input type="password" className="auth-input" />
+          {(error || authError) && (
+            <p style={{ color: 'red', marginTop: '15px', fontWeight: 500 }}>
+              {error || authError}
+            </p>
+          )}
 
-        <button className="auth-button">Sign Up</button>
+          <button className="auth-button" type="submit" disabled={loading}>
+            {loading ? 'Registering...' : 'Sign Up'}
+          </button>
+        </form>
 
         <p className="auth-link-footer">
           Already Have An Account?{' '}
