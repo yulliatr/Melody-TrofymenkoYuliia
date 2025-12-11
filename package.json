@@ -5,30 +5,37 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "cypress run",
+    "test": "vitest",
     "cypress:open": "cypress open",
     "prepare": "husky",
     "lint": "eslint \"src/**/*.{js,jsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,jsx}\" --fix",
     "prettier": "prettier --write .",
-    "server": "json-server --watch db.json --port 3000"
+    "server": "json-server --watch db.json --port 3000",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.4",
     "@babel/preset-react": "^7.27.1",
+    "@cypress/code-coverage": "^3.14.7",
     "@cypress/react": "^9.0.1",
     "@eslint/js": "^9.38.0",
-    "@vitejs/plugin-react": "^5.0.4",
+    "@vitejs/plugin-react": "^5.1.2",
+    "babel-plugin-istanbul": "^7.0.1",
     "cypress": "^14.5.4",
     "eslint": "^9.38.0",
     "eslint-plugin-cypress": "^5.2.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
+    "istanbul-lib-coverage": "^3.2.2",
+    "jsdom": "^27.3.0",
     "json-server": "^1.0.0-beta.3",
     "json-server-auth": "^2.1.0",
+    "nyc": "^17.1.0",
     "prettier": "^3.6.2",
     "vite": "^7.1.11",
-    "vite-plugin-istanbul": "^7.2.1"
+    "vite-plugin-istanbul": "^7.2.1",
+    "vitest": "^4.0.15"
   },
   "lint-staged": {
     "*.{js,jsx}": [

@@ -6,10 +6,11 @@ export default defineConfig({
   plugins: [
     react(),
     istanbul({
-      include: 'src/**/*.{js,jsx,ts,tsx}', 
+      include: 'src/**/*.{js,jsx,ts,tsx}',
       exclude: ['node_modules', 'cypress/'],
       extension: ['.js', '.jsx', '.ts', '.tsx'],
-      cypress: true, 
+      cypress: true,
+      requireEnv: false,
     }),
   ],
 });
