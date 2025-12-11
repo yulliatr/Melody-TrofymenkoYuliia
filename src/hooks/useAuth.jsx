@@ -1,7 +1,7 @@
 import React, { useState, useContext, createContext } from 'react';
 import axios from 'axios';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 const API_URL = 'http://localhost:3000';
 
 const generateUsername = (email) => (email ? email.split('@')[0] : 'Guest');

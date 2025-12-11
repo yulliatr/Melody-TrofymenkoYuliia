@@ -1,16 +1,21 @@
-const { defineConfig } = require('cypress');
+import { defineConfig } from 'cypress';
+import codeCoverageTask from '@cypress/code-coverage/task.js';
 
-module.exports = defineConfig({
-  e2e: {
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
-  },
-
+export default defineConfig({
+  e2e: {},
   component: {
+    indexHtmlFile: 'cypress/support/cypress-component-index.html',
+
     devServer: {
       framework: 'react',
-      bundler: 'webpack',
+      bundler: 'vite',
+    },
+
+    supportFile: 'cypress/support/component.js',
+
+    setupNodeEvents(on, config) {
+      codeCoverageTask(on, config);
+      return config;
     },
   },
 });
