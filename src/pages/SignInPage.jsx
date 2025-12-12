@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './AuthPage.css';
 import image1 from '../assets/images/image1.png';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth as defaultUseAuth } from '../hooks/useAuth';
 
-const SignInPage = () => {
-  const [email, setEmail] = useState('test@user.com');
-  const [password, setPassword] = useState('password123');
+const SignInPage = ({ useAuth = defaultUseAuth }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login, loading, authError } = useAuth();
   const navigate = useNavigate();
 

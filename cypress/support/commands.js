@@ -1,25 +1,41 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('generateEmail', () => {
+  const id = Date.now();
+  return `cytest+${id}@test.com`;
+});
+
+Cypress.Commands.add('register', (email, password = '123456') => {
+  return cy.request('POST', 'http://localhost:3000/auth/register', {
+    email,
+    password,
+  });
+});
+
+Cypress.Commands.add('login', (email, password = '123456') => {
+  return cy
+    .request('POST', 'http://localhost:3000/auth/login', {
+      email,
+      password,
+    })
+    .then((res) => {
+      window.localStorage.setItem('token', res.body.accessToken);
+      return res;
+    });
+});
+
+Cypress.Commands.add('cleanupUser', (email) => {
+  cy.exec(`node ./scripts/deleteUser.js ${email}`, {
+    failOnNonZeroExit: false,
+  });
+});
+
+Cypress.Commands.add('clearSavedSongs', () => {
+  cy.request('GET', 'http://localhost:3000/saved_songs?userId=*').then(
+    (res) => {
+      if (res.body?.length) {
+        res.body.forEach((song) => {
+          cy.request('DELETE', `http://localhost:3000/saved_songs/${song.id}`);
+        });
+      }
+    }
+  );
+});

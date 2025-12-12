@@ -17,8 +17,11 @@ const buttonPositions = {
   option4: { top: 619, left: 728 },
 };
 
-const GuessPage = () => {
-  const { user, isAuthenticated, updateUserContext } = useAuth();
+const GuessPage = ({ testUser }) => {
+  const auth = testUser
+    ? { user: testUser, isAuthenticated: true, updateUserContext: () => {} }
+    : useAuth();
+  const { user, isAuthenticated, updateUserContext } = auth;
   const navigate = useNavigate();
 
   const [currentQuiz, setCurrentQuiz] = useState(null);
