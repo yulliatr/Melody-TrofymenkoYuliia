@@ -59,7 +59,6 @@ describe('ProfilePage – boosted coverage', () => {
   });
 
   it('opens avatar modal and updates avatar (useMutation success)', () => {
-    // Mock PATCH success
     axios.patch.resolves({
       data: {
         username: 'TestUser',

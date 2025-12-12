@@ -11,6 +11,7 @@ import songRoutes from './routes/songs.routes.js';
 import savedSongsRoutes from './routes/savedSongs.routes.js';
 import userRoutes from './routes/user.routes.js';
 import quizRoutes from './routes/quiz.routes.js';
+import testRoutes from './routes/test.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +29,7 @@ app.use('/songs', songRoutes);
 app.use('/saved_songs', savedSongsRoutes);
 app.use('/users', userRoutes);
 app.use('/quiz', quizRoutes);
-
+app.use('/test', testRoutes);
 const SONGS_PATH = path.join(__dirname, 'db', 'songs.json');
 
 function shuffleArray(array) {

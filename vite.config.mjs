@@ -13,4 +13,10 @@ export default defineConfig({
       requireEnv: false,
     }),
   ],
+  resolve: {
+    alias: {
+      '@': '/src',
+      __cypress: '/cypress',
+    },
+  },
 });

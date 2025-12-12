@@ -18,17 +18,34 @@ export default [
       sourceType: 'script',
       globals: {
         ...globals.node,
+        console: 'readonly',
+        process: 'readonly',
       },
     },
     rules: {
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
-      'no-unused-vars': ['warn', { varsIgnorePattern: '^React$' }],
     },
   },
 
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['cypress.config.{js,mjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        console: 'readonly',
+        process: 'readonly',
+      },
+    },
+    rules: {
+      'no-undef': 'off',
+    },
+  },
+
+  {
+    files: ['src/**/*.{js,jsx}', 'cypress/component/**/*.{js,jsx}'],
     languageOptions: {
       parser: babelParser,
       parserOptions: {
@@ -43,29 +60,38 @@ export default [
         ...globals.browser,
       },
     },
-    plugins: {
-      react,
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
+    plugins: { react },
+    settings: { react: { version: 'detect' } },
     rules: {
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
-      'react/react-in-jsx-scope': 'off',
+
       'no-unused-vars': ['warn', { varsIgnorePattern: '^React$' }],
+
+      'react/jsx-no-undef': 'off',
     },
   },
 
   {
-    files: ['cypress/**/*.{js,jsx}', 'src/tests/**/*.{js,jsx}'],
+    files: [
+      'cypress/**/*.{js,jsx}',
+      'src/tests/**/*.{js,jsx}',
+      '**/*.test.{js,jsx}',
+    ],
     languageOptions: {
+      parser: babelParser,
+      parserOptions: {
+        requireConfigFile: false,
+        babelOptions: { presets: ['@babel/preset-react'] },
+      },
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...globals.browser,
+
         cy: 'readonly',
         Cypress: 'readonly',
+
         describe: 'readonly',
         it: 'readonly',
         test: 'readonly',
@@ -75,12 +101,10 @@ export default [
         after: 'readonly',
         afterEach: 'readonly',
       },
-      ecmaVersion: 'latest',
-      sourceType: 'module',
     },
-    plugins: {
-      cypress,
+    plugins: { cypress },
+    rules: {
+      'no-unused-vars': ['warn', { varsIgnorePattern: '^React$' }],
     },
-    rules: {},
   },
 ];
